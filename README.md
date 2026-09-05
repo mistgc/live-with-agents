@@ -12,7 +12,7 @@ A personal collection of reusable **agent Skills** and **harness implementations
 .
 ├── skills/                          # Self-authored agent skills
 │   ├── init-agent-harness/          # Bootstrap a project's agent-document workflow
-│   ├── lwa-translator/              # Markdown EN⇄ZH document translator skill
+│   ├── lwa-translator/              # Markdown EN/ZH document translator skill
 │   └── devfeat/                     # (placeholder) guided feature development
 ├── templates/
 │   └── project-structure-with-agents/   # Harness scaffold for a repo that works with agents

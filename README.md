@@ -13,6 +13,7 @@ A personal collection of reusable **agent Skills** and **harness implementations
 ├── skills/                          # Self-authored agent skills
 │   ├── init-agent-harness/          # Bootstrap a project's agent-document workflow
 │   ├── lwa-translator/              # Markdown EN/ZH document translator skill
+│   ├── create-quality-contract/     # Write a module's quality contract (pre/post/invariants)
 │   └── devfeat/                     # (placeholder) guided feature development
 ├── templates/
 │   └── project-structure-with-agents/   # Harness scaffold for a repo that works with agents
@@ -38,6 +39,16 @@ It also establishes the `<datetime>-<topic>.md` filename convention and the recu
 ### `skills/lwa-translator`
 
 Translates a Markdown document into a language-suffixed sibling file in the same directory, keeping the filename `<title>` unchanged. The default target flips with the source language: a Chinese doc becomes `<title>.en.md`, an English doc becomes `<title>.zh.md`; the user may override the target (e.g. `<title>.ja.md` for Japanese). Code blocks, links, frontmatter, and other identifiers are preserved verbatim — only prose is translated.
+
+### `skills/create-quality-contract`
+
+A **quality-contract** skill that agents can auto-invoke when a module's behavior carries implicit assumptions worth pinning down — before implementing a non-trivial operation or stateful module, or when refactoring code whose interface rules are unclear. It writes a precise, verifiable statement of those assumptions in three buckets:
+
+1. **Preconditions** — what the caller must guarantee before calling.
+2. **Postconditions** — what the module guarantees on return.
+3. **Invariants** — what holds across the module's whole lifetime.
+
+Each clause is a predicate precise enough to turn into an `assert` with zero further decisions, and every clause maps to a runnable check (assert or test). The skill authors the contract only — where the document is saved follows the surrounding context, not a hard-coded path.
 
 ## Harness templates
 

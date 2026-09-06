@@ -12,7 +12,7 @@ A personal collection of reusable **agent Skills** and **harness implementations
 .
 ├── skills/                          # Self-authored agent skills
 │   ├── init-agent-harness/          # Bootstrap a project's agent-document workflow
-│   ├── lwa-translator/              # Markdown EN/ZH document translator skill
+│   ├── document-translator/         # Markdown EN/ZH document translator skill
 │   ├── writing-quality-contract/     # Write a module's quality contract (pre/post/invariants)
 │   ├── writing-project-notes/       # File concluded work as retrievable notes (archived/fixed/rejected)
 │   ├── retrieving-project-notes/    # Retrieve notes: scan frontmatter, then read only the relevant ones
@@ -38,7 +38,7 @@ A **manual-only** skill (never auto-invoked) that sets up a project's `AGENTS.md
 
 It also establishes the `<datetime>-<topic>.md` filename convention and the recursive `.gitignore` rules needed to keep `.agents/local` structure tracked while ignoring its contents.
 
-### `skills/lwa-translator`
+### `skills/document-translator`
 
 Translates a Markdown document into a language-suffixed sibling file in the same directory, keeping the filename `<title>` unchanged. The default target flips with the source language: a Chinese doc becomes `<title>.en.md`, an English doc becomes `<title>.zh.md`; the user may override the target (e.g. `<title>.ja.md` for Japanese). Code blocks, links, frontmatter, and other identifiers are preserved verbatim — only prose is translated.
 

@@ -1,9 +1,9 @@
 ---
-name: lwa-translator
+name: document-translator
 description: Use when the user asks to create a translated version of a Markdown document, typically between English and Chinese. Trigger phrases include "translate X into Chinese/English", "make a Chinese/English version of a doc", or naming a .md file plus a target language (or no language, expecting a default). Output is a language-suffixed sibling file in the same directory, e.g. guide.zh.md or guide.en.md. Also applies when an existing .zh.md/.en.md translation is stale and must be re-generated to match its changed source.
 ---
 
-# LWA Translator
+# Document Translator
 
 ## Overview
 

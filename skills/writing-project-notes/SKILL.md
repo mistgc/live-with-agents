@@ -1,18 +1,18 @@
 ---
 name: writing-project-notes
-description: Use when a requirement or proposal has concluded and the repo should keep a queryable record of it — after a feature described by PRD, quality-contract, and SPEC documents is implemented in the code (archived), after a reported defect is fixed in the code (fixed), or after a proposed design or implementation was explicitly declined (rejected). Triggers when asked to write/archive/save a project note or record this feature/bug/rejection, or at the end of an implement / fix / decide cycle. Collects the surrounding context, locates the requirement's PRD, quality contract, and SPEC documents, classifies the outcome against the current code, and writes one Markdown note with YAML frontmatter into the repo's notes directory.
+description: Use when a requirement or proposal has concluded and the repo should keep a retrievable record of it — after a feature described by PRD, quality-contract, and SPEC documents is implemented in the code (archived), after a reported defect is fixed in the code (fixed), or after a proposed design or implementation was explicitly declined (rejected). Triggers when asked to write/archive/save a project note or record this feature/bug/rejection, or at the end of an implement / fix / decide cycle. Collects the surrounding context, locates the requirement's PRD, quality contract, and SPEC documents, classifies the outcome against the current code, and writes one Markdown note with YAML frontmatter into the repo's notes directory.
 ---
 
 # Writing Project Notes
 
 ## Overview
 
-A **project note** is a durable, queryable record of *concluded* work. Once a requirement's documents have been implemented in the code (or a defect fixed, or a design declined), the working conversation would otherwise evaporate — later sessions would have to re-derive the intent from scratch. A note distills what happened so a future agent can reconstruct *why the repo is the way it is* without replaying the history.
+A **project note** is a durable, retrievable record of *concluded* work. Once a requirement's documents have been implemented in the code (or a defect fixed, or a design declined), the working conversation would otherwise evaporate — later sessions would have to re-derive the intent from scratch. A note distills what happened so a future agent can reconstruct *why the repo is the way it is* without replaying the history.
 
-Each note has **two query surfaces**:
+Each note has **two retrieval surfaces**:
 
 1. A **filename** `yyyy-mm-dd-topic.md` — chronological and keyword-searchable, so an agent can scan a directory listing and pick a note by topic alone.
-2. A **YAML frontmatter** block with normalized keys (`type`, `topic`, `module`, `tags`, `sources`) — so an agent can grep or structure-query across many notes (e.g. all `type: rejected` decisions) fast.
+2. A **YAML frontmatter** block with normalized keys (`type`, `topic`, `module`, `tags`, `sources`) — so an agent can grep or run structured retrieval across many notes (e.g. all `type: rejected` decisions) fast.
 
 The note itself is a **distillation, not a copy** — it summarizes the PRD / quality-contract / SPEC documents and the actual code outcome, and highlights the decisions worth remembering. It never replaces the source documents; it points at them.
 
@@ -76,7 +76,7 @@ A note's class determines its folder. Follow the repo's **agent-document harness
 
 ## Note schema
 
-Every note is Markdown whose first line is a YAML frontmatter block. The keys are **normalized and mandatory** so agents can rely on them for queries — omit `sources` keys whose documents don't exist.
+Every note is Markdown whose first line is a YAML frontmatter block. The keys are **normalized and mandatory** so agents can rely on them for retrieval — omit `sources` keys whose documents don't exist.
 
 ```yaml
 ---
@@ -94,7 +94,7 @@ outcome: implemented       # implemented | fixed | declined — one-word confirm
 ---
 ```
 
-`type` drives the folder, `date` drives sort order, and `topic` + `title` + `tags` + `module` drive keyword lookup. Agents query notes by scanning filenames, or by grepping frontmatter (`type: rejected`, `module: services/rag`, a tag, a source path).
+`type` drives the folder, `date` drives sort order, and `topic` + `title` + `tags` + `module` drive keyword lookup. Agents retrieve notes by scanning filenames, or by grepping frontmatter (`type: rejected`, `module: services/rag`, a tag, a source path).
 
 ## Template
 
@@ -145,4 +145,4 @@ Keep `## Worth remembering` genuinely selective — the note's recall value is t
 | `type` and destination folder disagreeing | Frontmatter `type` must equal the `archived`/`fixed`/`rejected` subfolder it's filed into |
 | Filename with no date, or topic that doesn't match the frontmatter | `yyyy-mm-dd-topic.md` with `topic` matching the frontmatter `topic` |
 | Silently overwriting an older note for the same topic | Write a new dated note (supersede explicitly if needed), don't clobber history |
-| Inconsistent YAML keys across notes | Every note uses the normalized schema — identical keys make cross-note queries reliable |
+| Inconsistent YAML keys across notes | Every note uses the normalized schema — identical keys make cross-note retrieval reliable |

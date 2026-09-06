@@ -14,7 +14,7 @@ A personal collection of reusable **agent Skills** and **harness implementations
 │   ├── init-agent-harness/          # Bootstrap a project's agent-document workflow
 │   ├── lwa-translator/              # Markdown EN/ZH document translator skill
 │   ├── create-quality-contract/     # Write a module's quality contract (pre/post/invariants)
-│   ├── writing-project-notes/       # File concluded work as queryable notes (archived/fixed/rejected)
+│   ├── writing-project-notes/       # File concluded work as retrievable notes (archived/fixed/rejected)
 │   └── devfeat/                     # (placeholder) guided feature development
 ├── templates/
 │   └── project-structure-with-agents/   # Harness scaffold for a repo that works with agents
@@ -53,13 +53,13 @@ Each clause is a predicate precise enough to turn into an `assert` with zero fur
 
 ### `skills/writing-project-notes`
 
-Files **concluded** work as durable, queryable notes, complementing `init-agent-harness`'s archive workflow. It collects the surrounding context, locates the requirement's PRD, quality-contract, and SPEC documents, and **auto-classifies** the outcome against the current code into one of three types:
+Files **concluded** work as durable, retrievable notes, complementing `init-agent-harness`'s archive workflow. It collects the surrounding context, locates the requirement's PRD, quality-contract, and SPEC documents, and **auto-classifies** the outcome against the current code into one of three types:
 
 1. **`archived`** — the requirement (per its PRD/contract/SPEC) is now implemented in the code.
 2. **`fixed`** — a reported defect is now repaired in the code.
 3. **`rejected`** — a proposed design or implementation was explicitly declined.
 
-Each note is a Markdown file with normalized YAML frontmatter (`type`, `date`, `topic`, `title`, `module`, `tags`, `sources`) and a `yyyy-mm-dd-topic.md` filename, filed under the repo's `.agents/notes/{archived,fixed,rejected}/` so future sessions can query by filename or grep the frontmatter.
+Each note is a Markdown file with normalized YAML frontmatter (`type`, `date`, `topic`, `title`, `module`, `tags`, `sources`) and a `yyyy-mm-dd-topic.md` filename, filed under the repo's `.agents/notes/{archived,fixed,rejected}/` so future sessions can retrieve by filename or grep the frontmatter.
 
 ## Harness templates
 

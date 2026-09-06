@@ -15,6 +15,7 @@ A personal collection of reusable **agent Skills** and **harness implementations
 │   ├── lwa-translator/              # Markdown EN/ZH document translator skill
 │   ├── create-quality-contract/     # Write a module's quality contract (pre/post/invariants)
 │   ├── writing-project-notes/       # File concluded work as retrievable notes (archived/fixed/rejected)
+│   ├── retrieving-project-notes/    # Retrieve notes: scan frontmatter, then read only the relevant ones
 │   └── devfeat/                     # (placeholder) guided feature development
 ├── templates/
 │   └── project-structure-with-agents/   # Harness scaffold for a repo that works with agents
@@ -60,6 +61,10 @@ Files **concluded** work as durable, retrievable notes, complementing `init-agen
 3. **`rejected`** — a proposed design or implementation was explicitly declined.
 
 Each note is a Markdown file with normalized YAML frontmatter (`type`, `date`, `topic`, `title`, `module`, `tags`, `sources`) and a `yyyy-mm-dd-topic.md` filename, filed under the repo's `.agents/notes/{archived,fixed,rejected}/` so future sessions can retrieve by filename or grep the frontmatter.
+
+### `skills/retrieving-project-notes`
+
+Retrieves project notes **fast-first**: it scans only the YAML frontmatter of every note in the tree (a stdlib-only `scan_notes.py` that prints a one-line-per-note table — file, date, type, title, tags, module — newest first) and then reads in full only the notes whose scan rows look relevant to the retrieval goal. The scan range is narrowed by **note type** (`archived` / `fixed` / `rejected`), **date window**, or a **fuzzy topic/title match**; the script never reads note bodies. Retrieval ends with a synthesis that cites each note by path, and answers from the repo alone when no note is relevant.
 
 ## Harness templates
 

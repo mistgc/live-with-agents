@@ -1,6 +1,6 @@
 ---
 name: writing-project-notes
-description: Use when a requirement or proposal has concluded and the repo should keep a queryable record of it — after a feature described by PRD, quality-contract, and SPEC documents is implemented in the code (archived), after a reported defect is fixed in the code (fixed), or after a proposed design or implementation was explicitly declined (rejected). Triggers: "write/archive/save a project note", "record this feature/bug/rejection", or the end of an implement / fix / decide cycle. Collects the surrounding context, locates the requirement's PRD, quality contract, and SPEC documents, classifies the outcome against the current code, and writes one Markdown note with YAML frontmatter into the repo's notes directory.
+description: Use when a requirement or proposal has concluded and the repo should keep a queryable record of it — after a feature described by PRD, quality-contract, and SPEC documents is implemented in the code (archived), after a reported defect is fixed in the code (fixed), or after a proposed design or implementation was explicitly declined (rejected). Triggers when asked to write/archive/save a project note or record this feature/bug/rejection, or at the end of an implement / fix / decide cycle. Collects the surrounding context, locates the requirement's PRD, quality contract, and SPEC documents, classifies the outcome against the current code, and writes one Markdown note with YAML frontmatter into the repo's notes directory.
 ---
 
 # Writing Project Notes

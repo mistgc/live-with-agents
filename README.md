@@ -13,7 +13,7 @@ A personal collection of reusable **agent Skills** and **harness implementations
 ├── skills/                          # Self-authored agent skills
 │   ├── init-agent-harness/          # Bootstrap a project's agent-document workflow
 │   ├── lwa-translator/              # Markdown EN/ZH document translator skill
-│   ├── create-quality-contract/     # Write a module's quality contract (pre/post/invariants)
+│   ├── writing-quality-contract/     # Write a module's quality contract (pre/post/invariants)
 │   ├── writing-project-notes/       # File concluded work as retrievable notes (archived/fixed/rejected)
 │   ├── retrieving-project-notes/    # Retrieve notes: scan frontmatter, then read only the relevant ones
 │   └── devfeat/                     # (placeholder) guided feature development
@@ -42,7 +42,7 @@ It also establishes the `<datetime>-<topic>.md` filename convention and the recu
 
 Translates a Markdown document into a language-suffixed sibling file in the same directory, keeping the filename `<title>` unchanged. The default target flips with the source language: a Chinese doc becomes `<title>.en.md`, an English doc becomes `<title>.zh.md`; the user may override the target (e.g. `<title>.ja.md` for Japanese). Code blocks, links, frontmatter, and other identifiers are preserved verbatim — only prose is translated.
 
-### `skills/create-quality-contract`
+### `skills/writing-quality-contract`
 
 A **quality-contract** skill that agents can auto-invoke when a module's behavior carries implicit assumptions worth pinning down — before implementing a non-trivial operation or stateful module, or when refactoring code whose interface rules are unclear. It writes a precise, verifiable statement of those assumptions in three buckets:
 

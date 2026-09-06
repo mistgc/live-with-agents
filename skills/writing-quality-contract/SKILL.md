@@ -1,9 +1,9 @@
 ---
-name: create-quality-contract
+name: writing-quality-contract
 description: Use when a module's behavior carries implicit assumptions worth pinning down — before implementing a non-trivial operation or stateful module (contract-first), when refactoring or reverse-engineering existing code whose interface rules are unclear, or when asked to write a quality contract. Produces explicit, verifiable clauses — preconditions, postconditions, invariants — precise enough to be checked by asserts/tests. Skip for trivial helpers, or when the user only wants a spec/design doc.
 ---
 
-# Create Quality Contract
+# Write Quality Contract
 
 ## Overview
 

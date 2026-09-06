@@ -62,7 +62,7 @@ A note's class determines its folder. Follow the repo's **agent-document harness
 
 2. **Locate the requirement's documents.** Find the documents that correspond to this context — every one may be absent, and that is fine:
    - **PRD** — what the requirement wanted and why.
-   - **Quality contract** — the module's preconditions / postconditions / invariants (produced by the `create-quality-contract` skill).
+   - **Quality contract** — the module's preconditions / postconditions / invariants (produced by the `writing-quality-contract` skill).
    - **SPEC** — how it was to be built.
    Search likely homes: `.agents/local/` (`prd/`, `specs/`, plus wherever contracts were stored), `docs/`, the repo's `notes/` folders, and any paths already named in the conversation. Match by topic slug, date window, and by module/function names appearing both in the docs and the context. **Do not invent a document** — if a PRD, contract, or SPEC cannot be found, state its absence in the note's `sources` rather than fabricating one.
 

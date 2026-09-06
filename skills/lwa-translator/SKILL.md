@@ -1,9 +1,9 @@
 ---
 name: lwa-translator
-description: Use when the user asks to create a translated version of a Markdown document (文档翻译 / 中英互译), typically between English and Chinese. Triggers: "translate X into Chinese/English", "make a 中文/英文 version of a doc", "把…翻成中文/英文/日语…", naming a .md file plus a target language (or no language, expecting a default). Output is a language-suffixed sibling file in the same directory, e.g. guide.zh.md or guide.en.md. Also applies when an existing .zh.md/.en.md translation is stale and must be re-generated to match its changed source.
+description: Use when the user asks to create a translated version of a Markdown document, typically between English and Chinese. Triggers: "translate X into Chinese/English", "make a Chinese/English version of a doc", naming a .md file plus a target language (or no language, expecting a default). Output is a language-suffixed sibling file in the same directory, e.g. guide.zh.md or guide.en.md. Also applies when an existing .zh.md/.en.md translation is stale and must be re-generated to match its changed source.
 ---
 
-# LWA Translator (文档中英互译)
+# LWA Translator
 
 ## Overview
 
@@ -25,8 +25,9 @@ The user may override the target language; the output is then `<title>.<lang-cod
 ## Workflow
 
 1. **Resolve the target language.**
-   - If the user named a target language, translate to it (default mapping table below).
+   - If the user named a target language, translate to it (mapping in Step 3).
    - If no target was given, use the default from the source-language detection (Step 2).
+   - Recognize the language however the user names it: its English name, its endonym in its own script, or a name in some other language. Resolve it to one of the codes below.
 
 2. **Detect the source language** from the document's prose:
    - Strip fenced code blocks (```…```), indented code, inline code spans, frontmatter, URLs, and raw HTML before counting.
@@ -37,35 +38,35 @@ The user may override the target language; the output is then `<title>.<lang-cod
 
    | Source document is… | Default target | Output |
    |---|---|---|
-   | mainly Chinese (中文) | English | `<title>.en.md` |
-   | mainly English / other non-Chinese | Chinese (中文) | `<title>.zh.md` |
+   | mainly Chinese | English | `<title>.en.md` |
+   | mainly English / other non-Chinese | Chinese | `<title>.zh.md` |
 
    Detection is about the **body prose**, not the filename or frontmatter title.
 
 3. **Map the target to a language code and output path.**
 
-   Use the ISO 639-1 two-letter code as the suffix; if the language has none, use its three-letter code. Drop to a short alias list for the most common targets — also recognize the language's Chinese name:
+   Use the ISO 639-1 two-letter code as the suffix; if the language has none, use its three-letter code.
 
-   | Language | Code | Aliases the user may say |
-   |---|---|---|
-   | English 英文 | `en` | english, English |
-   | Chinese 简体中文 | `zh` | 中文, 汉语, chinese, simplified chinese |
-   | Chinese 繁体 | `zh-Hant` | 繁体, traditional chinese |
-   | Japanese 日语 | `ja` | 日文, 日本語 |
-   | Korean 韩语 | `ko` | 韩文, 한국어 |
-   | French 法语 | `fr` | français, 法文 |
-   | German 德语 | `de` | deutsch, 德文 |
-   | Spanish 西班牙语 | `es` | español, 西语 |
-   | Russian 俄语 | `ru` | 俄文 |
-   | Portuguese 葡萄牙语 | `pt` | português, 葡语 |
+   | Language | Code |
+   |---|---|
+   | English | `en` |
+   | Chinese (Simplified) | `zh` |
+   | Chinese (Traditional) | `zh-Hant` |
+   | Japanese | `ja` |
+   | Korean | `ko` |
+   | French | `fr` |
+   | German | `de` |
+   | Spanish | `es` |
+   | Russian | `ru` |
+   | Portuguese | `pt` |
 
-   **Output path:** keep the filename `<title>` byte-for-byte identical — **never translate, transliterate, or otherwise alter it**, no matter the script (an English source stays an English title, a Chinese source stays Chinese). Strip only the final `.md` extension, append `.<lang-code>.md`, and keep the source's directory.
+   **Output path:** keep the filename `<title>` byte-for-byte identical — **never translate, transliterate, or otherwise alter it**, no matter the script (an English source keeps an English title; a Chinese source keeps its Chinese title). Strip only the final `.md` extension, append `.<lang-code>.md`, and keep the source's directory.
 
    - `guide.md` (EN) → default → `guide.zh.md`
    - `guide.md` (ZH) → default → `guide.en.md`
    - `guide.md` (EN) → user wants Japanese → `guide.ja.md`
-   - `说明.md` (ZH) → user wants French → `说明.fr.md`
    - `my.docs.md` (EN) → `my.docs.zh.md`
+   - `guide.zh.md` (ZH) → English → `guide.en.md`
 
    **If the source already carries a language suffix** (`guide.zh.md`, `README.en.md`, any known `<lang>.md`), strip it before appending the new one so suffixes never nest — `guide.zh.md` (ZH) translated to English becomes `guide.en.md`, not `guide.zh.en.md`. This still preserves the identical `<title>`; only the language suffix changes.
 
@@ -80,7 +81,7 @@ The user may override the target language; the output is then `<title>.<lang-cod
    - Math `$…$`/`$$…$$`, HTML tags and attributes, numbers, units, dates, product/person/org names, and acronyms.
    - Markdown syntax itself: `#` levels, list/quote/table markers, emphasis, footnote-definition IDs (keep footnote ids consistent across the doc).
 
-   Produce a faithful, natural translation of the target language, not a word-for-word calque. Preserve terminology consistently. When translating into Chinese, use Chinese typography (，。""「」); into English, standard English punctuation.
+   Produce a faithful, natural translation in the target language, not a word-for-word calque. Preserve terminology consistently. When translating into Chinese, follow Chinese punctuation conventions (full-width marks); into English, use standard English punctuation.
 
 5. **Verify.** Re-read the output and compare with the source: same directory, filename `<title>` byte-identical to the source with the correct `.<lang>.md` suffix appended, all headings/paragraphs/list items/table cells present, code blocks and links byte-identical to the source, frontmatter intact, and no prose left untranslated. For very large documents, translate the whole file — do not stop early.
 
@@ -92,8 +93,8 @@ To translate several documents (or every `.md` in a folder), apply the same work
 |---|---|
 | Overwriting or deleting the source file | Never modify the source — always write a new sibling file |
 | Wrong suffix, e.g. writing the translation back into the source name, or nesting suffixes (`guide.zh.en.md`) | Append `<lang>.md` to the base name only; strip an existing language suffix first |
-| Translating or transliterating the filename `<title>` (e.g. turning `guide.md` into `指南.md`) | The title must stay byte-for-byte identical — only the language suffix changes |
-| Default target guessed wrong | Flip it on the detected source language: Chinese→en, non-Chinese→zh |
+| Translating or transliterating the filename `<title>` (e.g. renaming `guide.md` to a translated or transcribed title) | The title must stay byte-for-byte identical — only the language suffix changes |
+| Default target guessed wrong | Flip it on the detected source language: Chinese to en, non-Chinese to zh |
 | Translating code, URLs, wikilinks, or frontmatter | These are identifiers/structure — preserve them verbatim |
 | Counting code or frontmatter text when detecting language | Strip code/frontmatter/URLs first, then tally Han vs Latin on prose only |
 | Silent overwrite of an existing authored document | Check the target path; replace only a prior translation of this source, else ask |

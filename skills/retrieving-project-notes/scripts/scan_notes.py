@@ -7,14 +7,20 @@ read later by the agent only for notes the scan shows to be relevant.
 
 Two retrieval surfaces are surfaced for every note:
   1. filename  yyyy-mm-dd-topic.md   (authoritative date + topic)
-  2. frontmatter keys                type, date, topic, title, module, tags, sources
+  2. frontmatter keys                schema, type, date, topic, title,
+                                     module, tags, sources, commits
+
+The type vocabulary is the five v2 types (implemented, deprecated, fixed,
+rejected, archived); the scanner compares type values generically, so it is
+not hardcoded here.
 
 Usage (run from the repo root, or point --root at a notes tree):
 
   # all notes, newest first
   python scripts/scan_notes.py
 
-  # narrow by the three "range" dimensions
+  # narrow by the three "range" dimensions (type is one of the five v2 types)
+  python scripts/scan_notes.py --root .agents/notes --type implemented
   python scripts/scan_notes.py --root .agents/notes --type archived
   python scripts/scan_notes.py --since 2026-06-01 --until 2026-09-30
   python scripts/scan_notes.py --type fixed --since 2026-08-01
@@ -270,7 +276,10 @@ def main(argv=None):
         default=None,
         help="Notes tree to scan (default: .agents/notes under the working dir)",
     )
-    parser.add_argument("--type", help="Only notes of this type, e.g. archived|fixed|rejected")
+    parser.add_argument(
+        "--type",
+        help="Only notes of this type, e.g. implemented|deprecated|fixed|rejected|archived",
+    )
     parser.add_argument(
         "--since",
         metavar="YYYY-MM-DD",

@@ -14,7 +14,7 @@ A personal collection of reusable **agent Skills** and **harness implementations
 │   ├── init-agent-harness/          # Bootstrap a project's agent-document workflow
 │   ├── document-translator/         # Markdown EN/ZH document translator skill
 │   ├── writing-quality-contract/     # Write a module's quality contract (pre/post/invariants)
-│   ├── writing-project-notes/       # File concluded work as retrievable notes (archived/fixed/rejected)
+│   ├── writing-project-notes/       # File concluded work as typed notes (implemented/deprecated/fixed/rejected/archived)
 │   ├── retrieving-project-notes/    # Retrieve notes: scan frontmatter, then read only the relevant ones
 │   └── devfeat/                     # (placeholder) guided feature development
 ├── templates/
@@ -33,7 +33,7 @@ A personal collection of reusable **agent Skills** and **harness implementations
 A **manual-only** skill (never auto-invoked) that sets up a project's `AGENTS.md` with *output-constraint* rules and a `.agents/` harness. It encodes three rules for how agents should treat documents:
 
 1. **Store** every generated document (plan/spec/PRD/reports) under the git-ignored `.agents/local/`.
-2. **Archive** concluded work as outcome-classified notes under `.agents/notes/` — `archived/` (implemented/user-reviewed), `fixed/` (resolved defects), `rejected/` (declined proposals).
+2. **File** concluded work as typed notes under `.agents/notes/` — `implemented/` (features live in the code), `deprecated/` (removed/superseded), `fixed/` (resolved defects), `rejected/` (declined proposals), `archived/` (history snapshots).
 3. **Consult** those notes when searching the repo or answering questions, falling back to the repo alone when no note applies.
 
 It also establishes the `<datetime>-<topic>.md` filename convention and the recursive `.gitignore` rules needed to keep `.agents/local` structure tracked while ignoring its contents.
@@ -54,17 +54,19 @@ Each clause is a predicate precise enough to turn into an `assert` with zero fur
 
 ### `skills/writing-project-notes`
 
-Files **concluded** work as durable, retrievable notes, complementing `init-agent-harness`'s archive workflow. It collects the surrounding context, locates the requirement's PRD, quality-contract, and SPEC documents, and **auto-classifies** the outcome against the current code into one of three types:
+Files **concluded** work as durable, retrievable notes, complementing `init-agent-harness`'s note workflow. It collects the surrounding context, locates the requirement's PRD, quality-contract, and SPEC documents, and **auto-classifies** the outcome against the current code into one of five types on two tracks:
 
-1. **`archived`** — the requirement (per its PRD/contract/SPEC) is now implemented in the code.
-2. **`fixed`** — a reported defect is now repaired in the code.
-3. **`rejected`** — a proposed design or implementation was explicitly declined.
+1. **`implemented`** — a feature is live in the code (current-truth; syncs with code).
+2. **`deprecated`** — a feature was removed or superseded (current-truth; records the removal commit).
+3. **`fixed`** — a reported defect is now repaired in the code (current-truth).
+4. **`rejected`** — a proposed design or implementation was explicitly declined.
+5. **`archived`** — a step in how the repo reached its current shape, for AGENT recall only (history; not kept in sync).
 
-Each note is a Markdown file with normalized YAML frontmatter (`type`, `date`, `topic`, `title`, `module`, `tags`, `sources`) and a `yyyy-mm-dd-topic.md` filename, filed under the repo's `.agents/notes/{archived,fixed,rejected}/` so future sessions can retrieve by filename or grep the frontmatter.
+Each note is a Markdown file with normalized YAML frontmatter (`schema`, `type`, `date`, `topic`, `title`, `module`, `tags`, `sources`, `commits`) and a `yyyy-mm-dd-topic.md` filename, filed under the repo's `.agents/notes/{implemented,deprecated,fixed,rejected,archived}/` so future sessions can retrieve by filename or grep the frontmatter. The schema is versioned (`project-notes/v2`, see `docs/project-notes-schema.md`).
 
 ### `skills/retrieving-project-notes`
 
-Retrieves project notes **fast-first**: it scans only the YAML frontmatter of every note in the tree (a stdlib-only `scan_notes.py` that prints a one-line-per-note table — file, date, type, title, tags, module — newest first) and then reads in full only the notes whose scan rows look relevant to the retrieval goal. The scan range is narrowed by **note type** (`archived` / `fixed` / `rejected`), **date window**, or a **fuzzy topic/title match**; the script never reads note bodies. Retrieval ends with a synthesis that cites each note by path, and answers from the repo alone when no note is relevant.
+Retrieves project notes **fast-first**: it scans only the YAML frontmatter of every note in the tree (a stdlib-only `scan_notes.py` that prints a one-line-per-note table — file, date, type, title, tags, module — newest first) and then reads in full only the notes whose scan rows look relevant to the retrieval goal. The scan range is narrowed by **note type** (the five v2 types, incl. the current-truth vs history split), **date window**, or a **fuzzy topic/title match**; the script never reads note bodies. Retrieval ends with a synthesis that cites each note by path, and answers from the repo alone when no note is relevant.
 
 ## Harness templates
 
@@ -75,7 +77,7 @@ The reference scaffold for a repository that works with agents. Provides the `.a
 ```
 .agents/
 ├── local/          # git-ignored working docs (plans/, prd/, specs/, reports/)
-├── notes/          # concluded work, classified by outcome (archived/, fixed/, rejected/)
+├── notes/          # concluded work, typed (implemented/, deprecated/, fixed/, rejected/, archived/)
 ├── rules/          # repo-specific agent rules
 └── skills/         # repo-scoped skills
 ```

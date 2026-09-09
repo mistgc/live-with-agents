@@ -1,6 +1,6 @@
 # Project Knowledge State Lifecycle
 
-- **Status:** draft for review
+- **Status:** ready
 - **Date:** 2026-09-07
 - **Related:** [`docs/project-notes-schema.md`](./project-notes-schema.md)
 - **Governing directories:** `.agents/local/`, `.agents/notes/`

@@ -1,6 +1,6 @@
 # Project Notes Schema Specification
 
-- **Status:** draft for review
+- **Status:** ready
 - **Version:** `project-notes/v2`
 - **Date:** 2026-09-07
 - **Governing directory:** `.agents/notes/{implemented,deprecated,fixed,rejected,archived}/`

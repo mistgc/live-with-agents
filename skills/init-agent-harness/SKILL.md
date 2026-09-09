@@ -1,6 +1,6 @@
 ---
 name: init-agent-harness
-description: MANUAL-ONLY skill. Do not auto-invoke. Use ONLY when the user directly asks to run this skill — e.g. to set up or refresh a project's AGENTS.md with output-constraint rules (产出约束), adding a .agents harness so agents store generated docs (plan/spec/prd/reports) under git-ignored .agents/local, file concluded work as typed notes (implemented/deprecated/fixed/rejected/archived) under .agents/notes, and consult those notes when answering repo questions.
+description: MANUAL-ONLY skill. Do not auto-invoke. Use ONLY when the user directly asks to run this skill — e.g. to set up or refresh a project's AGENTS.md with output-constraint rules, adding a .agents harness so agents store generated docs (plan/spec/prd/reports) under git-ignored .agents/local, file concluded work as typed notes (implemented/deprecated/fixed/rejected/archived) under .agents/notes, and consult those notes when answering repo questions.
 disable-auto-invoke: true
 ---
 

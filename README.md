@@ -22,7 +22,7 @@ A personal collection of reusable **agent Skills** and **harness implementations
 │       └── .agents/                     #   local/, notes/, rules/, skills/ skeleton
 ├── awesome-skills/                  # Curated third-party skill collections (submodules)
 │   └── obsidian-skills/             #   Obsidian skills by kepano (github.com/kepano/obsidian-skills)
-├── docs/                            # (empty) documentation
+├── docs/                            # Project-knowledge reference docs (state-lifecycle, project-notes-schema)
 └── scripts/                         # (empty) helper scripts
 ```
 
@@ -36,7 +36,9 @@ A **manual-only** skill (never auto-invoked) that sets up a project's `AGENTS.md
 2. **File** concluded work as typed notes under `.agents/notes/` — `implemented/` (features live in the code), `deprecated/` (removed/superseded), `fixed/` (resolved defects), `rejected/` (declined proposals), `archived/` (history snapshots).
 3. **Consult** those notes when searching the repo or answering questions, falling back to the repo alone when no note applies.
 
-It also establishes the `<datetime>-<topic>.md` filename convention and the recursive `.gitignore` rules needed to keep `.agents/local` structure tracked while ignoring its contents.
+It also establishes the `<datetime>-<topic>.md` filename convention for generated working docs and the recursive `.gitignore` rules needed to keep `.agents/local` structure tracked while ignoring its contents.
+
+The skill treats `docs/state-lifecycle.md` and `docs/project-notes-schema.md` as the authoritative references behind the note rules, installs copies of both into the repo's `docs/`, and writes the AGENTS.md note rules so future agents read those two files (or the relevant part) whenever they file, retrieve, or classify a note.
 
 ### `skills/document-translator`
 
@@ -72,7 +74,7 @@ Retrieves project notes **fast-first**: it scans only the YAML frontmatter of ev
 
 ### `templates/project-structure-with-agents`
 
-The reference scaffold for a repository that works with agents. Provides the `.agents/` skeleton (with `.gitkeep` per level):
+The reference scaffold for a repository that works with agents. Provides the `.agents/` skeleton (with `.gitkeep` per level) and the project-knowledge reference docs:
 
 ```
 .agents/
@@ -80,9 +82,12 @@ The reference scaffold for a repository that works with agents. Provides the `.a
 ├── notes/          # concluded work, typed (implemented/, deprecated/, fixed/, rejected/, archived/)
 ├── rules/          # repo-specific agent rules
 └── skills/         # repo-scoped skills
+docs/
+├── state-lifecycle.md        # promotion gate, five types on two tracks
+└── project-notes-schema.md   # note schema (project-notes/v2)
 ```
 
-It ships with a `conventional-commit` skill that guides agents through writing Conventional Commits messages. The `init-agent-harness` skill copies from this template instead of hand-creating folders.
+The `docs/` copies mirror `docs/state-lifecycle.md` and `docs/project-notes-schema.md` at the repo root — keep them in sync when either changes. It ships with a `conventional-commit` skill that guides agents through writing Conventional Commits messages. The `init-agent-harness` skill copies from this template instead of hand-creating folders, and installs those two docs into a repo's `docs/` when the harness is set up.
 
 ## Third-party collections
 

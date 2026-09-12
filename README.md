@@ -1,9 +1,8 @@
 # Live with Agents
 
-A personal collection of reusable **agent Skills** and **harness implementations** for working and living with coding agents. The repo is a mix of:
+A personal collection of reusable **agent Skills** for working and living with coding agents. The repo is a mix of:
 
 - **Skills** (`skills/`) — self-authored capabilities that teach agents how to do something, written as `SKILL.md`.
-- **Harness implementations** (`templates/`) — reusable scaffolding that wires an agent into a project (rules, notes, output-constraint workflows).
 - **Curated third-party skill sets** (`awesome-skills/`) — vendored as git submodules.
 
 ## Repository layout
@@ -13,13 +12,11 @@ A personal collection of reusable **agent Skills** and **harness implementations
 ├── skills/                          # Self-authored agent skills
 │   ├── init-agent-harness/          # Bootstrap a project's agent-document workflow
 │   ├── document-translator/         # Markdown EN/ZH document translator skill
+│   ├── conventional-commit/         # Write Conventional Commits messages (prompt + workflow)
 │   ├── writing-quality-contract/     # Write a module's quality contract (pre/post/invariants)
 │   ├── writing-project-notes/       # File concluded work as typed notes (implemented/deprecated/fixed/rejected/archived)
 │   ├── retrieving-project-notes/    # Retrieve notes: scan frontmatter, then read only the relevant ones
 │   └── devfeat/                     # (placeholder) guided feature development
-├── templates/
-│   └── project-structure-with-agents/   # Harness scaffold for a repo that works with agents
-│       └── .agents/                     #   local/, notes/, rules/, skills/ skeleton
 ├── awesome-skills/                  # Curated third-party skill collections (submodules)
 │   └── obsidian-skills/             #   Obsidian skills by kepano (github.com/kepano/obsidian-skills)
 ├── docs/                            # Project-knowledge reference docs (state-lifecycle, project-notes-schema)
@@ -38,11 +35,15 @@ A **manual-only** skill (never auto-invoked) that sets up a project's `AGENTS.md
 
 It also establishes the `<datetime>-<topic>.md` filename convention for generated working docs and the recursive `.gitignore` rules needed to keep `.agents/local` structure tracked while ignoring its contents.
 
-The skill treats `docs/state-lifecycle.md` and `docs/project-notes-schema.md` as the authoritative references behind the note rules, installs copies of both into the repo's `docs/`, and writes the AGENTS.md note rules so future agents read those two files (or the relevant part) whenever they file, retrieve, or classify a note.
+The skill treats `docs/state-lifecycle.md` and `docs/project-notes-schema.md` as the authoritative references behind the note rules, bundling its own copies under `skills/init-agent-harness/references/`. Rather than copy those into the target repo's `docs/`, it writes a `.agents/notes/README.md` that orients a reader in the notes folder and links both docs by relative path, and the AGENTS.md note rules point at that README so future agents reach the docs whenever they file, retrieve, or classify a note.
 
 ### `skills/document-translator`
 
 Translates a Markdown document into a language-suffixed sibling file in the same directory, keeping the filename `<title>` unchanged. The default target flips with the source language: a Chinese doc becomes `<title>.en.md`, an English doc becomes `<title>.zh.md`; the user may override the target (e.g. `<title>.ja.md` for Japanese). Code blocks, links, frontmatter, and other identifiers are preserved verbatim — only prose is translated.
+
+### `skills/conventional-commit`
+
+Guides an agent through writing a [Conventional Commits](https://www.conventionalcommits.org/) message: it inspects `git status` / `git diff`, stages the change, and constructs a `type(scope): description` message from the allowed type set (`feat`, `fix`, `docs`, `refactor`, …), with an optional body and footer (e.g. `BREAKING CHANGE:` or issue references), then runs the commit.
 
 ### `skills/writing-quality-contract`
 
@@ -69,25 +70,6 @@ Each note is a Markdown file with normalized YAML frontmatter (`schema`, `type`,
 ### `skills/retrieving-project-notes`
 
 Retrieves project notes **fast-first**: it scans only the YAML frontmatter of every note in the tree (a stdlib-only `scan_notes.py` that prints a one-line-per-note table — file, date, type, title, tags, module — newest first) and then reads in full only the notes whose scan rows look relevant to the retrieval goal. The scan range is narrowed by **note type** (the five v2 types, incl. the current-truth vs history split), **date window**, or a **fuzzy topic/title match**; the script never reads note bodies. Retrieval ends with a synthesis that cites each note by path, and answers from the repo alone when no note is relevant.
-
-## Harness templates
-
-### `templates/project-structure-with-agents`
-
-The reference scaffold for a repository that works with agents. Provides the `.agents/` skeleton (with `.gitkeep` per level) and the project-knowledge reference docs:
-
-```
-.agents/
-├── local/          # git-ignored working docs (plans/, prd/, specs/, reports/)
-├── notes/          # concluded work, typed (implemented/, deprecated/, fixed/, rejected/, archived/)
-├── rules/          # repo-specific agent rules
-└── skills/         # repo-scoped skills
-docs/
-├── state-lifecycle.md        # promotion gate, five types on two tracks
-└── project-notes-schema.md   # note schema (project-notes/v2)
-```
-
-The `docs/` copies mirror `docs/state-lifecycle.md` and `docs/project-notes-schema.md` at the repo root — keep them in sync when either changes. It ships with a `conventional-commit` skill that guides agents through writing Conventional Commits messages. The `init-agent-harness` skill copies from this template instead of hand-creating folders, and installs those two docs into a repo's `docs/` when the harness is set up.
 
 ## Third-party collections
 

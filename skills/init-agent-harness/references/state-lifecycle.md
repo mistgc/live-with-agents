@@ -212,5 +212,5 @@ the commit-set field. Adopting it therefore requires:
 1. Bumping the schema to `project-notes/v2` per the versioning policy, with a
    migration note.
 2. Updating the consumers: `writing-project-notes`, `retrieving-project-notes`,
-   `scripts/scan_notes.py`, and `init-agent-harness` / the template scaffold
+   `scripts/scan_notes.py`, and `init-agent-harness`
    (all of which still reference the three-type split).

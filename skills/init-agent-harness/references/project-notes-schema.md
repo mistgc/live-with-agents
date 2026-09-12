@@ -4,7 +4,7 @@
 - **Version:** `project-notes/v2`
 - **Date:** 2026-09-07
 - **Governing directory:** `.agents/notes/{implemented,deprecated,fixed,rejected,archived}/`
-- **Consumers:** `writing-project-notes`, `retrieving-project-notes`, `scripts/scan_notes.py`, `init-agent-harness` / the `project-structure-with-agents` template
+- **Consumers:** `writing-project-notes`, `retrieving-project-notes`, `scripts/scan_notes.py`, `init-agent-harness`
 - **Companion:** [`docs/state-lifecycle.md`](./state-lifecycle.md) — defines the flow that produces these notes
 
 ## Purpose and scope
@@ -187,7 +187,7 @@ v1 used a three-type vocabulary (`archived` / `fixed` / `rejected`) in which
 `archived` meant "implemented". v2 replaces it with five types, redefines
 `archived` as the history track, and adds the change set. This is breaking.
 
-> **This repository currently has no notes** — only the template scaffold — so
+> **This repository currently has no notes** — only the note-writing scaffolding — so
 > the migration below applies to repositories that already adopted v1, and to
 > notes written before this document existed.
 
@@ -235,7 +235,7 @@ Each would be a *versioned* addition, not a one-off field:
 |---|---|
 | `writing-project-notes` skill | Emit only conformant v2 notes; file by `type`; distill source docs; record the change set; omit absent sources; make `rejected` notes self-sufficient. |
 | `retrieving-project-notes` skill + `scan_notes.py` | Read the frontmatter fields; treat C4 as the folder↔type invariant; filter on the five-type vocabulary; tolerate unknown keys. |
-| `init-agent-harness` / template | Scaffold all five directories and reference this schema as the notes contract. |
+| `init-agent-harness` | Scaffold all five directories and reference this schema as the notes contract. |
 
 Changes to the skills or scanner that alter note structure are changes to this
 schema and must go through the versioning policy above.

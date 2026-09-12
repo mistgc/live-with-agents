@@ -599,17 +599,36 @@ def _print_table(rows, no_header=False):
 
 
 def _print_index(rows, schema_link):
-    """A whole .agents/rules/README.md, regenerated from frontmatter."""
+    """A whole .agents/rules/README.md, regenerated from frontmatter.
+
+    This is the single canonical content of the rules README: init-agent-harness
+    writes the same body when it bootstraps the harness (with no rules filed),
+    so a regenerated index is identical to the bootstrapped one and neither
+    writer clobbers the other's intent.
+    """
     live = [r for r in rows if r["status"] in ("active", "draft")]
     out = [
         "# Agent rules",
         "",
-        "Constraints in force on the agent, one rule per file. Generated from rule",
-        "frontmatter by `scripts/scan_rules.py --index` — **do not hand-edit**; edit the",
-        "rule files and regenerate.",
+        "Constraints in force on the agent: durable, scoped rules on AGENT behavior,",
+        "one rule per flat `<id>.md` file.",
         "",
-        "The schema is `agent-rules/v1`; the authoritative field list, precedence rule,",
-        "and conformance checks live in [`%s`](%s)." % (schema_link, schema_link),
+        "Unlike `.agents/notes/` (concluded knowledge) and `.agents/local/` (in-flight",
+        "working documents), this directory holds *standing constraints* — what the",
+        "AGENT must do, must not do, should prefer, or may do, within an explicit scope.",
+        "Rules are authored with the `writing-agent-rules` skill; never hand-write a rule",
+        "file or hand-edit this index.",
+        "",
+        "This file is **generated from rule frontmatter**. Regenerate it after adding or",
+        "changing a rule, instead of editing it:",
+        "",
+        "```sh",
+        "python .agents/skills/writing-agent-rules/scripts/scan_rules.py --index > .agents/rules/README.md",
+        "```",
+        "",
+        "The schema is `agent-rules/v1`; the authoritative field list, precedence rule",
+        "and conformance checks (R1–R16) live in",
+        "[`%s`](%s)." % (schema_link, schema_link),
         "",
         "## In force",
         "",
@@ -632,7 +651,9 @@ def _print_index(rows, schema_link):
             out.append("| `%s` | `%s` | %s |"
                        % (r["id"], r["status"], ", ".join(superseded_by) or "—"))
         out.append("")
-    print("\n".join(out))
+    # Exactly one trailing newline, so the bootstrapped copy that
+    # init-agent-harness writes and a regenerated index stay byte-identical.
+    print("\n".join(out).rstrip("\n"))
 
 
 def _print_issues(results, strict):

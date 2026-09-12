@@ -75,8 +75,12 @@ not ask for** — unprompted rules are governance the user did not consent to.
   the user that AGENTS.md should point at `.agents/rules/README.md` so future
   agents find it. If creating the directory would surprise the user, ask first.
 
-The rules README is the **index**, generated from frontmatter by
-`scripts/scan_rules.py` — never hand-maintained, or it drifts.
+The rules README is both the orientation doc for the folder and the **index** of
+the rules in force, generated from frontmatter by `scripts/scan_rules.py --index`
+— never hand-maintained, or it drifts. `init-agent-harness` writes the same
+canonical body when it bootstraps the harness, so regenerating after rules are
+filed reproduces that document with the table filled in rather than clobbering
+different prose.
 
 ## Steps
 

@@ -16,10 +16,12 @@ A personal collection of reusable **agent Skills** for working and living with c
 │   ├── writing-quality-contract/     # Write a module's quality contract (pre/post/invariants)
 │   ├── writing-project-notes/       # File concluded work as typed notes (implemented/deprecated/fixed/rejected/archived)
 │   ├── retrieving-project-notes/    # Retrieve notes: scan frontmatter, then read only the relevant ones
+│   ├── writing-agent-rules/         # Turn a stated constraint into a scoped, checkable rule
 │   └── devfeat/                     # (placeholder) guided feature development
 ├── awesome-skills/                  # Curated third-party skill collections (submodules)
 │   └── obsidian-skills/             #   Obsidian skills by kepano (github.com/kepano/obsidian-skills)
-├── docs/                            # Project-knowledge reference docs (state-lifecycle, project-notes-schema)
+├── docs/                            # Reference docs (state-lifecycle, project-notes-schema, agent-rules-schema)
+├── .agents/                         # This repo's own harness: notes/, rules/, git-ignored local/, skills/ symlinks
 └── scripts/                         # (empty) helper scripts
 ```
 
@@ -70,6 +72,14 @@ Each note is a Markdown file with normalized YAML frontmatter (`schema`, `type`,
 ### `skills/retrieving-project-notes`
 
 Retrieves project notes **fast-first**: it scans only the YAML frontmatter of every note in the tree (a stdlib-only `scan_notes.py` that prints a one-line-per-note table — file, date, type, title, tags, module — newest first) and then reads in full only the notes whose scan rows look relevant to the retrieval goal. The scan range is narrowed by **note type** (the five v2 types, incl. the current-truth vs history split), **date window**, or a **fuzzy topic/title match**; the script never reads note bodies. Retrieval ends with a synthesis that cites each note by path, and answers from the repo alone when no note is relevant.
+
+### `skills/writing-agent-rules`
+
+Turns a stated constraint into a durable, scoped **rule** on agent behavior — one flat file per rule at `.agents/rules/<id>.md`. It fixes the constraint as a single normative sentence in frontmatter (`statement:`), classified by **modality**: `require` / `forbid` (binding), `prefer` (a default deviable only with a stated reason), and `allow` (an explicit carve-out). It then forces the two things rule files usually omit — an **explicit scope** (`paths` / `triggers`, where absence means *global*, rendered `always`) and a **check** (a script path, or `manual`/`review`; silence is not an option).
+
+Rules are keyed by a stable `id` and never deleted: a rule is **superseded** by a successor naming it in `supersedes`, or **retired**. A carve-out is itself an `allow` rule naming what it overrides, so every escape hatch is scoped, checked, and enumerable. Conflicts between live rules resolve deterministically — explicit `overrides`, then narrower scope — and an equal-specificity conflict between different modalities is reported as an **error** rather than silently decided.
+
+The schema is versioned (`agent-rules/v1`, see `docs/agent-rules-schema.md`, bundled under the skill's `references/`), with conformance checks R1–R16 and a stdlib-only `scripts/scan_rules.py` that scans frontmatter, validates the tree, reports conflicts and dangling references, and regenerates the `.agents/rules/README.md` index. `init-agent-harness` scaffolds the rules directory and points `AGENTS.md` at it; this skill authors the rules.
 
 ## Third-party collections
 

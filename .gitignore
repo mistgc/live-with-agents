@@ -1,3 +1,6 @@
 !.gitkeep
 
 .agents/local/*
+
+__pycache__/
+*.pyc

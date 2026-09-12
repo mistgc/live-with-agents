@@ -1,6 +1,6 @@
 ---
 name: init-agent-harness
-description: MANUAL-ONLY skill. Do not auto-invoke. Use ONLY when the user directly asks to run this skill — e.g. to set up or refresh a project's AGENTS.md with output-constraint rules, adding a .agents harness so agents store generated docs (plan/spec/prd/reports) under git-ignored .agents/local, file concluded work as typed notes (implemented/deprecated/fixed/rejected/archived) under .agents/notes, and consult those notes when answering repo questions. It also writes a README under .agents/notes explaining that folder and pointing at the two governing reference docs (state-lifecycle.md, project-notes-schema.md) by relative path into the skill's bundled references directory, and the AGENTS.md rules it writes tell future agents to read that README when filing or consulting notes.
+description: MANUAL-ONLY skill. Do not auto-invoke. Use ONLY when the user directly asks to run this skill — e.g. to set up or refresh a project's AGENTS.md with output-constraint rules, adding a .agents harness so agents store generated docs (plan/spec/prd/reports) under git-ignored .agents/local, file concluded work as typed notes (implemented/deprecated/fixed/rejected/archived) under .agents/notes, and consult those notes when answering repo questions. It also writes a README under .agents/notes explaining that folder and pointing at the two governing reference docs (state-lifecycle.md, project-notes-schema.md) by relative path into the skill's bundled references directory, and the AGENTS.md rules it writes tell future agents to read that README when filing or consulting notes. It additionally scaffolds a .agents/rules region for scoped agent-behavior constraints and points AGENTS.md at it, while the rules themselves are authored by the writing-agent-rules skill, which also generates the rules index.
 disable-auto-invoke: true
 ---
 
@@ -15,6 +15,8 @@ A repo's AGENTS.md should tell future agents three things about documents:
 3. **Consult** those notes when asked to search the repo or explain its usage, combining the relevant note with the repo — and answering from the repo alone when no note applies.
 
 This skill encodes those three rules into a project's `AGENTS.md` and makes sure the `.agents/` harness and gitignore support them.
+
+Beyond documents, the harness carries a **constraints** region: `.agents/rules/` holds scoped, durable rules on agent behavior — one rule per flat `<id>.md` file, schema `agent-rules/v1`. This skill scaffolds that directory and points `AGENTS.md` at it; the rules themselves are authored by the `writing-agent-rules` skill, which also generates the `.agents/rules/README.md` index. There is no bundled rules-schema copy here — that skill owns and bundles its own.
 
 Rules 2 and 3 rest on two authoritative reference documents, which this skill bundles under its own `references/` directory:
 
@@ -51,7 +53,8 @@ When **not** to use: the user wants planning docs deliberately tracked in git; t
    │   ├── fixed/      # resolved defects (syncs with code)
    │   ├── rejected/   # declined proposals
    │   └── archived/   # history: how the repo got here (AGENT recall only)
-   ├── rules/
+   ├── rules/          # scoped agent-behavior constraints, one rule per file
+   │   └── README.md   # generated index of filed rules (see writing-agent-rules)
    └── skills/
    ```
    This is the reference shape. When a repo already runs a different variant of this harness, adapt to the existing folders (e.g. existing `notes/` subfolders, extra `local/` categories) rather than copying the reference verbatim. Keep empty folders present with a `.gitkeep` per level.
@@ -120,11 +123,14 @@ When **not** to use: the user wants planning docs deliberately tracked in git; t
 
    ### Consult notes when answering
    When a user wants to search for something or find the usage of the repo, the AGENT can read the filenames of the notes located under `.agents/notes/` and use them to determine which note it should read. Then it combines the content of that note with the repo to answer the user. When the question is about the repo's current state, prefer the `implemented` / `deprecated` / `fixed` notes (they track the code); when it is about how the repo got here, consult `archived`. But if no note should be read, the AGENT answers the user using only the repo.
+
+   ### Rules under .agents/rules constrain what the AGENT may do
+   `.agents/rules/` holds durable, scoped constraints on AGENT behavior — one rule per flat `<id>.md` file, schema `agent-rules/v1`. When acting in an area a rule covers, read that rule; treat `require` and `forbid` rules as binding within their `paths` / `triggers` scope, and `prefer` as a default the AGENT may deviate from only with a stated reason. `.agents/rules/README.md` is the generated index of the rules in force — if it is missing or says none are filed, no rules exist yet and the AGENT proceeds from the repo and the AGENTS.md rules alone. Author or change a rule with the `writing-agent-rules` skill; never hand-write a rule file or hand-edit the index.
    ```
 
 6. **Encode the filename convention.** Generated working documents under `.agents/local/` follow `<datetime>-<topic>.md` — a leading date (ISO, e.g. `2026-09-05`), then the topic, joined by `-`, e.g. `2026-09-05-rag-eval-spec.md`. Concluded-work notes follow the schema's own filename rule — `<date>-<topic>.md`, the date equal to the frontmatter `date` (see the schema doc linked from `.agents/notes/README.md`) — the same shape, with the schema doc authoritative for notes. Without a date prefix, working docs of the same topic collide and notes can't be ordered by when the work was done.
 
-7. **Verify.** Re-read the final AGENTS.md; confirm all three rules are present and readable, and that its note-model rule points at `.agents/notes/README.md` — no copy is installed under `docs/` any more, so no rule should reference a `docs/` path. Confirm `.agents/notes/README.md` exists and its two relative links resolve to the skill's bundled copies under `.agents/skills/init-agent-harness/references/`. Confirm `.agents/local` content is ignored (`git check-ignore .agents/local/<any doc>` reports it) and the scaffold folders exist. Show the resulting section to the user.
+7. **Verify.** Re-read the final AGENTS.md; confirm all four rules are present and readable, and that its note-model rule points at `.agents/notes/README.md` — no copy is installed under `docs/` any more, so no rule should reference a `docs/` path. Confirm the rules rule points at `.agents/rules/` and that the directory exists. Confirm `.agents/notes/README.md` exists and its two relative links resolve to the skill's bundled copies under `.agents/skills/init-agent-harness/references/`. Confirm `.agents/local` content is ignored (`git check-ignore .agents/local/<any doc>` reports it) and the scaffold folders exist. Show the resulting section to the user.
 
 ## Common Mistakes
 
@@ -139,5 +145,8 @@ When **not** to use: the user wants planning docs deliberately tracked in git; t
 | AGENTS.md rules point at `docs/state-lifecycle.md` / `docs/project-notes-schema.md` as if the docs were installed there | No copy goes to the project's `docs/` any more — the rules point at `.agents/notes/README.md`, which links the skill's bundled `references/` copies |
 | The notes README's links don't resolve | They must point into the skill's bundled copies at `.agents/skills/init-agent-harness/references/` — Step 7 checks they resolve |
 | The notes README lands under `.agents/local/` (git-ignored) or links with the wrong depth | It belongs at `.agents/notes/README.md`, linking `../skills/init-agent-harness/references/<doc>` — the skill-relative `references/<doc>` anchored at the skill's `.agents/skills/` install path |
+| `.agents/rules/` is scaffolded but nothing points at it | The AGENTS.md rules section must carry the rules rule, pointing at `.agents/rules/` and at the `writing-agent-rules` skill |
+| A rule file or the rules index is hand-written from this skill | This skill only scaffolds the directory and the pointer — rule authoring and index generation belong to `writing-agent-rules` |
+| A rules-schema copy is installed under `docs/` | `writing-agent-rules` owns and bundles its own schema; this skill installs no copy of it |
 | Editing the wrong AGENTS.md in a multi-repo workspace | Operate on the repo root that owns the `.agents/` harness |
 | Working in a subfolder of a larger git repo where the `.agents/` gitignore won't take effect | Skip gitignore changes (not your repo root) and create only the scaffold + AGENTS.md |
